@@ -35,6 +35,9 @@ class ApiLinkController extends AbstractController
             $linkRepository->save($link);
         }
 
+        //fixme: Broken response with normalizer when passing $link Object to JsonReponse
         return new JsonResponse('ok', 200, [], true);
     }
+
+
 }
