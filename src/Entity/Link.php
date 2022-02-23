@@ -3,7 +3,10 @@
 
 namespace App\Entity;
 
+use App\Enum\LinkTypeEnum;
+use App\Enum\ProviderEnum;
 use App\Repository\LinkRepository;
+use App\Service\LinkHelpers;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -13,14 +16,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Link
 {
-    public const PROVIDER_YOUTUBE = 'youtube';
-    public const PROVIDER_VIMEO = 'vimeo';
-    public const PROVIDERS = [self::PROVIDER_YOUTUBE, self::PROVIDER_VIMEO];
-
-    public const TYPE_VIDEO = 'video';
-    public const TYPE_IMAGE = 'image';
-    public const LINK_TYPES = [self::TYPE_VIDEO, self::TYPE_IMAGE];
-
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -93,7 +88,7 @@ class Link
      */
     public function setType(?string $type): void
     {
-        if (!in_array($type, self::LINK_TYPES)) {
+        if (!in_array($type, LinkTypeEnum::LINK_TYPES)) {
             throw new \InvalidArgumentException("Invalid link type");
         }
         $this->type = $type;
@@ -129,7 +124,8 @@ class Link
      */
     public function setProvider(?string $provider): void
     {
-        if (!in_array($provider, self::PROVIDERS)) {
+        $provider = LinkHelpers::extractProvider($provider);
+        if (!$provider) {
             throw new \InvalidArgumentException("Invalid provider");
         }
         $this->provider = $provider;

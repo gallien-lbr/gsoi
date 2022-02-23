@@ -3,6 +3,7 @@
 
 namespace App\Service;
 
+use App\Entity\Link;
 use Embed\Embed;
 
 class LinkProvider
@@ -14,19 +15,19 @@ class LinkProvider
         $this->embed = $embed;
     }
 
-    public function get(string $url): array
+    public function get(string $url):?Link
     {
         if (!$this->embed instanceof Embed) {
             throw new \Exception('embed not defined');
         }
 
         if (!LinkHelpers::isValid($url)) {
-            return [];
+            return null;
         }
 
         $info = $this->embed->get($url);
 
-        return ['title' => $info->title];
+        return LinkHelpers::extractLinkEntity($info);
     }
 
 

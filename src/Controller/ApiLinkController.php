@@ -28,12 +28,9 @@ class ApiLinkController
 
         $url = $bodyContent['url'];
 
-        if(LinkHelpers::isValid($url) && null !== LinkHelpers::extractType($url))
+        if(LinkHelpers::isValid($url))
         {
-            $providedLink = $linkProvider->get($url);
-            $link = new Link();
-            $link->setTitle($providedLink['title']);
-            $link->setProperties([]);
+            $link = $linkProvider->get($url);
             $linkRepository->save($link);
         }
 
