@@ -2,20 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\Link;
+use App\Repository\LinkRepositoryInterface;
 use App\Service\LinkHelpers;
 use App\Service\LinkProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
 
-class HomeController
+class ApiLinkController
 {
-    /**
-     * @Route("test", methods={"POST"}, name="api_save")
-     */
-    public function index(Request $request, LinkProvider $linkProvider): Response
+    public function save(Request $request, LinkProvider $linkProvider,
+                         LinkRepositoryInterface $linkRepository): Response
     {
         try {
             $bodyContent = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
@@ -29,12 +28,15 @@ class HomeController
 
         $url = $bodyContent['url'];
 
-        //$res = $linkProvider->get($url);
-        $a = LinkHelpers::isValid($url);
-        $b = LinkHelpers::extractType($url);
-        var_dump($b);
-        var_dump($a);
-        //var_dump($res);
+        if(LinkHelpers::isValid($url) && null !== LinkHelpers::extractType($url))
+        {
+            $providedLink = $linkProvider->get($url);
+            $link = new Link();
+            $link->setTitle($providedLink['title']);
+            $link->setProperties([]);
+            $linkRepository->save($link);
+        }
+
         return new Response('debug');
     }
 }
