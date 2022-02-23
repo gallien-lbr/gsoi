@@ -20,8 +20,8 @@ class LinkProvider
             throw new \Exception('embed not defined');
         }
 
-        if (false === filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new \Exception('not a valid url');
+        if (!LinkHelpers::isValid($url)) {
+            return [];
         }
 
         $info = $this->embed->get($url);
