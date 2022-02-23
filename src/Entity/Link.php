@@ -13,6 +13,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Link
 {
+    public const PROVIDER_YOUTUBE = 'youtube';
+    public const PROVIDER_VIMEO = 'vimeo';
+    public const PROVIDERS = [self::PROVIDER_YOUTUBE, self::PROVIDER_VIMEO];
+
+    public const TYPE_VIDEO = 'video';
+    public const TYPE_IMAGE = 'image';
+    public const LINK_TYPES = [self::TYPE_VIDEO, self::TYPE_IMAGE];
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -21,9 +29,76 @@ class Link
     private int $id;
 
     /**
-     * @ORM\Column(type="string", name="provider", length=2048, nullable=true)
+     * @ORM\Column(type="string", name="url", length=2048, nullable=true)
      */
     private ?string $url;
+
+    /**
+     * @ORM\Column(type="string", name="provider", length=255, nullable=true)
+     */
+    private ?string $provider;
+
+    /**
+     * @ORM\Column(type="string", name="title", length=255, nullable=true)
+     */
+    private ?string $title;
+
+    /**
+     * @ORM\Column(type="string", name="author", length=255, nullable=true)
+     */
+    private ?string $author;
+
+    /* @ORM\Column(type="datetime", name="created_at") */
+    private \DateTime $createdAt;
+
+    /* @ORM\Column(type="datetime", name="published_at") */
+    private \DateTime $publishedAt;
+
+    /**
+     * @ORM\Column(type="string", name="type", length=255, nullable=true)
+     */
+    private ?string $type;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private array $properties;
+
+    /**
+     * @return array
+     */
+    public function getProperties(): array
+    {
+        return $this->properties;
+    }
+
+    /**
+     * @param array $properties
+     */
+    public function setProperties(array $properties): void
+    {
+        $this->properties = $properties;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string|null $type
+     */
+    public function setType(?string $type): void
+    {
+        if (!in_array($type, self::LINK_TYPES)) {
+            throw new \InvalidArgumentException("Invalid link type");
+        }
+        $this->type = $type;
+    }
+
 
     /**
      * @return string|null
@@ -54,6 +129,9 @@ class Link
      */
     public function setProvider(?string $provider): void
     {
+        if (!in_array($provider, self::PROVIDERS)) {
+            throw new \InvalidArgumentException("Invalid provider");
+        }
         $this->provider = $provider;
     }
 
@@ -120,27 +198,6 @@ class Link
     {
         $this->publishedAt = $publishedAt;
     }
-
-    /**
-     * @ORM\Column(type="string", name="provider", length=255, nullable=true)
-     */
-    private ?string $provider;
-
-    /**
-     * @ORM\Column(type="string", name="title", length=255, nullable=true)
-     */
-    private ?string $title;
-
-    /**
-     * @ORM\Column(type="string", name="author", length=255, nullable=true)
-     */
-    private ?string $author;
-
-    /* @ORM\Column(type="datetime", name="created_at") */
-    private \DateTime $createdAt;
-
-    /* @ORM\Column(type="datetime", name="published_at") */
-    private \DateTime $publishedAt;
 
     /**
      * @ORM\PrePersist
