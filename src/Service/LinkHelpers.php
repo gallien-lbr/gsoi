@@ -5,6 +5,8 @@ namespace App\Service;
 
 
 use App\Entity\Link;
+use App\Enum\LinkPropertyEnum;
+use App\Enum\LinkTypeEnum;
 use App\Enum\ProviderEnum;
 
 class LinkHelpers
@@ -29,15 +31,30 @@ class LinkHelpers
     {
         $link = new Link();
         $link->setProperties(
-        [
-            'width' => $info->code->width,
-            'height' => $info->code->height,
-            'duration' => $info->getOEmbed()->int('duration'),
-        ]);
-        $link->setTitle($info->title);
-        $link->setAuthor($info->authorName);
-        $link->setProvider($info->providerName);
-        $link->setUrl($info->url);
+            [
+                LinkPropertyEnum::PROPERTY_WIDTH => $info->code->width,
+                LinkPropertyEnum::PROPERTY_HEIGHT => $info->code->height,
+                LinkPropertyEnum::PROPERTY_DURATION => $info->getOEmbed()->int(LinkPropertyEnum::PROPERTY_DURATION),
+            ])->setTitle($info->title)
+            ->setAuthor($info->authorName)
+            ->setProvider($info->providerName)
+            ->setUrl($info->url)
+            ->setType(self::extractTypeFromProvider($info->providerName))
+        ;
+
         return $link;
+    }
+
+    public static function extractTypeFromProvider(string $provider): ?string
+    {
+        $type = LinkTypeEnum::TYPE_UNDEFINED;
+        switch ($provider) {
+            case ProviderEnum::PROVIDER_YOUTUBE:
+            case ProviderEnum::PROVIDER_VIMEO:
+                $type = LinkTypeEnum::TYPE_VIDEO;
+                break;
+        }
+
+        return $type;
     }
 }

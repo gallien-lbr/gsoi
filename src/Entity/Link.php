@@ -8,7 +8,6 @@ use App\Enum\ProviderEnum;
 use App\Repository\LinkRepository;
 use App\Service\LinkHelpers;
 use Doctrine\ORM\Mapping as ORM;
-use JetBrains\PhpStorm\Internal\TentativeType;
 
 /**
  * @ORM\Entity(repositoryClass=LinkRepository::class)
@@ -71,9 +70,10 @@ class Link implements \JsonSerializable
     /**
      * @param array $properties
      */
-    public function setProperties(array $properties): void
+    public function setProperties(array $properties): self
     {
         $this->properties = $properties;
+        return $this;
     }
 
     /**
@@ -89,6 +89,7 @@ class Link implements \JsonSerializable
      */
     public function setType(?string $type): void
     {
+        $type = LinkHelpers::extractTypeFromProvider($this->getProvider());
         if (!in_array($type, LinkTypeEnum::LINK_TYPES)) {
             throw new \InvalidArgumentException("Invalid link type");
         }
@@ -107,9 +108,10 @@ class Link implements \JsonSerializable
     /**
      * @param string|null $url
      */
-    public function setUrl(?string $url): void
+    public function setUrl(?string $url): self
     {
         $this->url = $url;
+        return $this;
     }
 
     /**
@@ -123,13 +125,14 @@ class Link implements \JsonSerializable
     /**
      * @param string|null $provider
      */
-    public function setProvider(?string $provider): void
+    public function setProvider(?string $provider): self
     {
         $provider = LinkHelpers::extractProvider($provider);
         if (!$provider) {
             throw new \InvalidArgumentException("Invalid provider");
         }
         $this->provider = $provider;
+        return $this;
     }
 
     /**
@@ -143,9 +146,10 @@ class Link implements \JsonSerializable
     /**
      * @param string|null $title
      */
-    public function setTitle(?string $title): void
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
+        return $this;
     }
 
     /**
@@ -159,9 +163,10 @@ class Link implements \JsonSerializable
     /**
      * @param string|null $author
      */
-    public function setAuthor(?string $author): void
+    public function setAuthor(?string $author): self
     {
         $this->author = $author;
+        return $this;
     }
 
     /**
@@ -211,13 +216,15 @@ class Link implements \JsonSerializable
 
     public function jsonSerialize()
     {
-        return ['id' => $this->getId(),
+        return [
+            'id' => $this->getId(),
             'url' => $this->getUrl(),
             'author' => $this->getAuthor(),
             'provider' => $this->getProvider(),
             'properties' => $this->getProperties(),
             'created_at' => $this->getCreatedAt(),
             'title' => $this->getTitle(),
+            'type' => $this->getType(),
         ];
     }
 }
