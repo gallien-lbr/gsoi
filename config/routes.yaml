@@ -1,4 +1,14 @@
 save:
-    path: /api/save
-    controller: App\Controller\ApiLinkController::save
+    path: /api/link/save
+    controller: App\Controller\LinkController::save
     methods: POST
+
+delete:
+    path: /api/link/delete
+    controller: App\Controller\LinkController::delete
+    methods: DELETE
+
+get:
+    path: /api/link/list
+    controller: App\Controller\LinkController::list
+    methods: GET

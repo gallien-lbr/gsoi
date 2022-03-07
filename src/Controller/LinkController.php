@@ -5,32 +5,26 @@ namespace App\Controller;
 use App\Entity\Link;
 use App\Repository\LinkRepositoryInterface;
 use App\Service\LinkProvider;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-
-class ApiLinkController extends AbstractController
+class LinkController extends AbstractApiController
 {
     public function save(Request                 $request, LinkProvider $linkProvider,
                          LinkRepositoryInterface $linkRepository): JsonResponse
     {
-        try {
-            $bodyContent = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException $e) {
-            throw new BadRequestHttpException('Bad content');
-        }
+
+        $bodyContent = $this->getBodyContent($request);
 
         if (!isset($bodyContent['url'])) {
             throw new BadRequestHttpException('Bad request');
         }
 
-        $url = $bodyContent['url'];
-
         /** @var Link $link */
-        $link = $linkProvider->get($url);
+        $link = $linkProvider->get($bodyContent['url']);
         if ($link) {
             $linkRepository->save($link);
         }
@@ -38,5 +32,24 @@ class ApiLinkController extends AbstractController
         return new JsonResponse(json_encode($link), Response::HTTP_CREATED, [], true);
     }
 
+    public function delete(Request                $request, LinkRepositoryInterface $linkRepository,
+                           EntityManagerInterface $em
+    ): JsonResponse
+    {
+
+        $bodyContent = $this->getBodyContent($request);
+        $link = $linkRepository->findOneById($bodyContent['id']);
+        if ($link) {
+            $em->remove($link);
+            $em->flush();
+        }
+
+        return new JsonResponse(json_encode([]), Response::HTTP_OK, [], true);
+    }
+
+    public function list(Request $request)
+    {
+
+    }
 
 }
