@@ -8,13 +8,14 @@ use App\Enum\ProviderEnum;
 use App\Repository\LinkRepository;
 use App\Service\LinkHelpers;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Internal\TentativeType;
 
 /**
  * @ORM\Entity(repositoryClass=LinkRepository::class)
  * @ORM\Table(name="link")
  * @ORM\HasLifecycleCallbacks
  */
-class Link
+class Link implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -206,5 +207,17 @@ class Link
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function jsonSerialize()
+    {
+        return ['id' => $this->getId(),
+            'url' => $this->getUrl(),
+            'author' => $this->getAuthor(),
+            'provider' => $this->getProvider(),
+            'properties' => $this->getProperties(),
+            'created_at' => $this->getCreatedAt(),
+            'title' => $this->getTitle(),
+        ];
     }
 }

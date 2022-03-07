@@ -1,3 +1,4 @@
 index:
     path: /api/save
     controller: App\Controller\ApiLinkController::save
+    methods: POST

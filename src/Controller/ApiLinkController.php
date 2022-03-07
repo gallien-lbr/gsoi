@@ -2,18 +2,20 @@
 
 namespace App\Controller;
 
+use App\Entity\Link;
 use App\Repository\LinkRepositoryInterface;
 use App\Service\LinkHelpers;
 use App\Service\LinkProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 
 class ApiLinkController extends AbstractController
 {
-    public function save(Request $request, LinkProvider $linkProvider,
+    public function save(Request                 $request, LinkProvider $linkProvider,
                          LinkRepositoryInterface $linkRepository): JsonResponse
     {
         try {
@@ -28,15 +30,13 @@ class ApiLinkController extends AbstractController
 
         $url = $bodyContent['url'];
 
-        if(LinkHelpers::isValid($url))
-        {
-            /** @var Link $link */
-            $link = $linkProvider->get($url);
+        /** @var Link $link */
+        $link = $linkProvider->get($url);
+        if ($link) {
             $linkRepository->save($link);
         }
 
-        //fixme: Broken response with normalizer when passing $link Object to JsonReponse
-        return new JsonResponse('ok', 200, [], true);
+        return new JsonResponse(json_encode($link), Response::HTTP_CREATED, [], true);
     }
 
 
