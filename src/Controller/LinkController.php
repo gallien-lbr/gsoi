@@ -47,9 +47,10 @@ class LinkController extends AbstractApiController
         return new JsonResponse(json_encode([]), Response::HTTP_OK, [], true);
     }
 
-    public function list(Request $request)
+    public function list(LinkRepositoryInterface $linkRepository): JsonResponse
     {
-
+        $links = $linkRepository->findAll();
+        return new JsonResponse($links, Response::HTTP_OK, [], false);
     }
 
 }

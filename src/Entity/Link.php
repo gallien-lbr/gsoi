@@ -43,11 +43,15 @@ class Link implements \JsonSerializable
      */
     private ?string $author;
 
-    /* @ORM\Column(type="datetime", name="created_at") */
-    private \DateTime $createdAt;
+    /**
+     * @ORM\Column(type="datetime", name="created")
+     */
+    private \DateTime $created;
 
-    /* @ORM\Column(type="datetime", name="published_at") */
-    private \DateTime $publishedAt;
+    /**
+     * @ORM\Column(type="datetime", name="published", nullable=true)
+     */
+    private  \DateTime  $published;
 
     /**
      * @ORM\Column(type="string", name="type", length=255, nullable=true)
@@ -172,33 +176,26 @@ class Link implements \JsonSerializable
     /**
      * @return \DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreated(): \DateTime
     {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param \DateTime $createdAt
-     */
-    public function setCreatedAt(\DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
+       return $this->created;
     }
 
     /**
      * @return \DateTime
      */
-    public function getPublishedAt(): \DateTime
+    public function getPublished(): \DateTime
     {
-        return $this->publishedAt;
+        return $this->published;
     }
 
     /**
      * @param \DateTime $publishedAt
      */
-    public function setPublishedAt(\DateTime $publishedAt): void
+    public function setPublished(\DateTime $published): self
     {
-        $this->publishedAt = $publishedAt;
+        $this->published = $published;
+        return $this;
     }
 
     /**
@@ -206,7 +203,7 @@ class Link implements \JsonSerializable
      */
     public function onPrePersist()
     {
-        $this->createdAt = new \DateTime("now");
+        $this->created = new \DateTime("now");
     }
 
     public function getId(): int
@@ -222,7 +219,8 @@ class Link implements \JsonSerializable
             'author' => $this->getAuthor(),
             'provider' => $this->getProvider(),
             'properties' => $this->getProperties(),
-            'created_at' => $this->getCreatedAt(),
+            'created' => $this->getCreated(),
+            'published' => $this->getPublished(),
             'title' => $this->getTitle(),
             'type' => $this->getType(),
         ];
