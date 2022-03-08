@@ -3,21 +3,22 @@
 declare(strict_types=1);
 namespace App\Service;
 
+use App\Adapter\OEmbedInterface;
 use App\Entity\Link;
-use Embed\Embed;
+
 
 class LinkProvider
 {
-    protected Embed $embed;
+    protected OEmbedInterface $oEmbed;
 
-    public function __construct(Embed $embed)
+    public function __construct(OEmbedInterface $oEmbed)
     {
-        $this->embed = $embed;
+        $this->oEmbed = $oEmbed;
     }
 
     public function get(string $url):?Link
     {
-        if (!$this->embed instanceof Embed) {
+        if (!$this->oEmbed instanceof OEmbedInterface) {
             throw new \Exception('embed not defined');
         }
 
@@ -25,7 +26,7 @@ class LinkProvider
             return null;
         }
 
-        $info = $this->embed->get($url);
+        $info = $this->oEmbed->get($url);
 
         return LinkHelpers::extractLinkEntity($info);
     }
