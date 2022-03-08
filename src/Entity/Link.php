@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -8,6 +8,7 @@ use App\Enum\ProviderEnum;
 use App\Repository\LinkRepository;
 use App\Service\LinkHelpers;
 use Doctrine\ORM\Mapping as ORM;
+use Psr\Http\Message\UriInterface;
 
 /**
  * @ORM\Entity(repositoryClass=LinkRepository::class)
@@ -110,11 +111,12 @@ class Link implements \JsonSerializable
     }
 
     /**
-     * @param string|null $url
+     * @param UriInterface $url
+     * @return $this
      */
-    public function setUrl(?string $url): self
+    public function setUrl(UriInterface $url): self
     {
-        $this->url = $url;
+        $this->url = (string)$url;
         return $this;
     }
 
@@ -220,7 +222,7 @@ class Link implements \JsonSerializable
             'provider' => $this->getProvider(),
             'properties' => $this->getProperties(),
             'created' => $this->getCreated(),
-            'published' => $this->getPublished(),
+          //  'published' => $this->getPublished(),
             'title' => $this->getTitle(),
             'type' => $this->getType(),
         ];
