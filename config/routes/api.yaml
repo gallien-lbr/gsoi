@@ -1,0 +1,14 @@
+save:
+  path: link/save
+  controller: App\Controller\LinkController::save
+  methods: POST
+
+delete:
+  path: link/delete
+  controller: App\Controller\LinkController::delete
+  methods: DELETE
+
+get:
+  path: link/list
+  controller: App\Controller\LinkController::list
+  methods: GET
