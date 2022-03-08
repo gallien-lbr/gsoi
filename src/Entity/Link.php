@@ -82,6 +82,19 @@ class Link implements \JsonSerializable
     }
 
     /**
+     * @param string $key
+     * @param int|null $value
+     * @return $this
+     */
+    public function addProperty(string $key,?int $value):self
+    {
+        if($value){
+            $this->properties[$key] = $value;
+        }
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getType(): ?string

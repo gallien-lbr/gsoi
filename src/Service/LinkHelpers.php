@@ -39,7 +39,6 @@ class LinkHelpers
             [
                 LinkPropertyEnum::PROPERTY_WIDTH => $info->code->width,
                 LinkPropertyEnum::PROPERTY_HEIGHT => $info->code->height,
-                LinkPropertyEnum::PROPERTY_DURATION => $info->getOEmbed()->int(LinkPropertyEnum::PROPERTY_DURATION),
             ])->setTitle($info->title)
             ->setAuthor($info->authorName)
             ->setProvider($info->providerName)
@@ -47,6 +46,9 @@ class LinkHelpers
             ->setType(self::extractTypeFromProvider($info->providerName))
         ;
 
+        if(LinkTypeEnum::TYPE_VIDEO === $link->getType()){
+            $link->addProperty(LinkPropertyEnum::PROPERTY_DURATION , $info->getOEmbed()->int(LinkPropertyEnum::PROPERTY_DURATION));
+        }
         return $link;
     }
 
