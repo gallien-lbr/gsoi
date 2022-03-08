@@ -27,6 +27,11 @@ class LinkHelpers
         return (!filter_var($url, FILTER_VALIDATE_URL) === false);
     }
 
+    /**
+     * todo: Add published date (seems to be missing in OEmbed metadatas)
+     * @param $info
+     * @return Link
+     */
     public static function extractLinkEntity($info): Link
     {
         $link = new Link();
@@ -52,6 +57,9 @@ class LinkHelpers
             case ProviderEnum::PROVIDER_YOUTUBE:
             case ProviderEnum::PROVIDER_VIMEO:
                 $type = LinkTypeEnum::TYPE_VIDEO;
+                break;
+            case ProviderEnum::PROVIDER_FLICKR:
+                $type = LinkTypeEnum::TYPE_IMAGE;
                 break;
         }
 
