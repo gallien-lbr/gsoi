@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Adapter;
+namespace App\Proxy;
 
 use Embed\Embed;
 use Psr\Container\ContainerInterface;
@@ -11,7 +11,7 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 // Wraps OEmbed in a custom adapter to abstract client from vendor interface
 // and adds cache
-class OEmbedProxyProxy implements OEmbedProxyInterface
+class OEmbed implements OEmbedInterface
 {
     private Embed $embed;
     private CacheInterface $cache;

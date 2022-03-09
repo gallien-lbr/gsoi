@@ -3,22 +3,22 @@
 declare(strict_types=1);
 namespace App\Service;
 
-use App\Adapter\OEmbedProxyInterface;
+use App\Proxy\OEmbedInterface;
 use App\Entity\Link;
 
 
 class LinkProvider
 {
-    protected OEmbedProxyInterface $oEmbed;
+    protected OEmbedInterface $oEmbed;
 
-    public function __construct(OEmbedProxyInterface $oEmbed)
+    public function __construct(OEmbedInterface $oEmbed)
     {
         $this->oEmbed = $oEmbed;
     }
 
     public function get(string $url):?Link
     {
-        if (!$this->oEmbed instanceof OEmbedProxyInterface) {
+        if (!$this->oEmbed instanceof OEmbedInterface) {
             throw new \Exception('embed not defined');
         }
 
