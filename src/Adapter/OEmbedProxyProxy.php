@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Adapter;
 
 use Embed\Embed;
+use Psr\Container\ContainerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -15,16 +16,18 @@ class OEmbedProxyProxy implements OEmbedProxyInterface
     private Embed $embed;
     private CacheInterface $cache;
 
-    public function __construct(Embed $embed, CacheInterface $cache)
+    public function __construct(Embed $embed, CacheInterface $cache, ContainerInterface $container)
     {
         $this->embed = $embed;
         $this->cache = $cache;
+        $this->ttl = $container->getParameter('cache_ttl');
     }
 
     public function get(string $url)
     {
-        $info = $this->cache->get(\sha1($url), function (ItemInterface $item) use ($url) {
-            $item->expiresAfter(3600);
+        $ttl = $this->ttl;
+        $info = $this->cache->get(\sha1($url), function (ItemInterface $item) use ($url,$ttl) {
+            $item->expiresAfter($ttl);
             $info = $this->embed->get($url);
             return $info;
         });
