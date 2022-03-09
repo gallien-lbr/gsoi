@@ -35,19 +35,20 @@ class LinkHelpers
     public static function extractLinkEntity($info): Link
     {
         $link = new Link();
-        $link->setProperties(
-            [
-                LinkPropertyEnum::PROPERTY_WIDTH => $info->code->width,
-                LinkPropertyEnum::PROPERTY_HEIGHT => $info->code->height,
-            ])->setTitle($info->title)
+        $link->setTitle($info->title)
             ->setAuthor($info->authorName)
             ->setProvider($info->providerName)
             ->setUrl($info->url)
             ->setType(self::extractTypeFromProvider($info->providerName))
         ;
 
-        if(LinkTypeEnum::TYPE_VIDEO === $link->getType()){
-            $link->addProperty(LinkPropertyEnum::PROPERTY_DURATION , $info->getOEmbed()->int(LinkPropertyEnum::PROPERTY_DURATION));
+        foreach (self::getPropertiesList($link) as $propertyName){
+            if(\property_exists($info->code,$propertyName) && LinkTypeEnum::TYPE_VIDEO !== $link->getType()){
+                $link->addProperty($propertyName, $info->code->{$propertyName});
+            }
+            elseif(LinkTypeEnum::TYPE_VIDEO === $link->getType()){
+                $link->addProperty($propertyName, $info->getOEmbed()->int($propertyName));
+            }
         }
         return $link;
     }
@@ -66,5 +67,20 @@ class LinkHelpers
         }
 
         return $type;
+    }
+
+    public static function getPropertiesList(Link $link):array
+    {
+        $type = $link->getType();
+        $properties = [LinkPropertyEnum::PROPERTY_WIDTH, LinkPropertyEnum::PROPERTY_HEIGHT];
+        switch ($type){
+            case LinkTypeEnum::TYPE_VIDEO:
+                $properties[] = LinkPropertyEnum::PROPERTY_DURATION;
+                break;
+
+            case LinkTypeEnum::TYPE_IMAGE:
+                break;
+        }
+        return $properties;
     }
 }

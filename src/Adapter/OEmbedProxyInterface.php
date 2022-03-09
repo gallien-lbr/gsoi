@@ -2,7 +2,7 @@
 
 namespace App\Adapter;
 
-interface OEmbedInterface
+interface OEmbedProxyInterface
 {
     public function get(string $url);
 }
