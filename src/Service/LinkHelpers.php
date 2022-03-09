@@ -43,10 +43,7 @@ class LinkHelpers
         ;
 
         foreach (self::getPropertiesList($link) as $propertyName){
-            if(\property_exists($info->code,$propertyName) && LinkTypeEnum::TYPE_VIDEO !== $link->getType()){
-                $link->addProperty($propertyName, $info->code->{$propertyName});
-            }
-            elseif(LinkTypeEnum::TYPE_VIDEO === $link->getType()){
+            if(\property_exists($info->code,$propertyName)){
                 $link->addProperty($propertyName, $info->getOEmbed()->int($propertyName));
             }
         }
