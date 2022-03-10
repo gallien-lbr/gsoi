@@ -10,3 +10,7 @@ doctrine_gen_migration:
 	docker exec -it gsoi_php_1 php bin/console doctrine:migrations:dump-schema
 test:
 	docker exec -it gsoi_php_1 vendor/bin/phpunit
+coverage:
+	docker exec -it gsoi_php_1 vendor/bin/phpunit --coverage-html coverage
+build:
+	 docker-compose up -d --no-deps --build
