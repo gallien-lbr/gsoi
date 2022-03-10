@@ -1,3 +1,7 @@
-blog:
+api:
     resource: './routes/api.yaml'
     prefix: api/v1
+index:
+    path: /
+    controller: App\Controller\PageController::index
+    methods: GET
