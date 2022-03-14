@@ -6,6 +6,7 @@ namespace Test;
 use App\Entity\Link;
 use App\Enum\LinkPropertyEnum;
 use App\Enum\LinkTypeEnum;
+use App\Enum\ProviderEnum;
 use App\Service\LinkHelpers;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +27,8 @@ final class LinkHelpersTest extends TestCase
     {
         $link = $this->createMock(Link::class);
         $link->method('getType')
-            ->will($this->onConsecutiveCalls(LinkTypeEnum::TYPE_VIDEO,LinkTypeEnum::TYPE_IMAGE));
+            ->will($this->onConsecutiveCalls(LinkTypeEnum::TYPE_VIDEO,
+                                                   LinkTypeEnum::TYPE_IMAGE));
 
 
         $defaultProperties = [LinkPropertyEnum::PROPERTY_WIDTH, LinkPropertyEnum::PROPERTY_HEIGHT];
@@ -41,6 +43,12 @@ final class LinkHelpersTest extends TestCase
         $url['image'] = 'https://www.flickr.com/photos/danielcheong/51920514592/in/explore-2022-03-07/';
 
         $this->assertTrue(LinkHelpers::isValid($url['image']),'LinkHelpers::isValid function is broken');
+
+        $existingProvider = ProviderEnum::PROVIDER_FLICKR;
+        $unknownProvider = 'foo.bar';
+
+        $this->assertSame($existingProvider,LinkHelpers::extractProvider($existingProvider));
+        $this->assertNull(LinkHelpers::extractProvider($unknownProvider));
     }
 
 }
