@@ -3,7 +3,6 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Link;
-use App\Repository\LinkRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -14,9 +13,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final class LinkControllerTest extends WebTestCase
 {
-    private const API_SAVE = '/api/v1/link/save';
-    private const API_DELETE = '/api/v1/link/delete';
-    private const API_GET = 'api/v1/link/list';
+    private const BASE_URL = '/api/v1/link';
+    private const API_SAVE = self::BASE_URL . '/save';
+    private const API_DELETE = self::BASE_URL . '/delete';
+    private const API_GET = self::BASE_URL . '/list';
     private const URL = 'https://www.youtube.com/watch?v=6IUeFk0pyAA';
 
     private ?KernelBrowser $client;
