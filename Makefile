@@ -20,4 +20,7 @@ test_migrate_db:
 	docker exec -it gsoi_php_1 php bin/console doctrine:migrations:migrate -n --env=test
 test_with_coverage:
 	docker exec -it gsoi_php_1 vendor/bin/phpunit --coverage-html coverage
+test_api_endpoint:
+	docker exec -it gsoi_php_1 vendor/bin/phpunit tests/Controller/LinkControllerTest.php
+
 

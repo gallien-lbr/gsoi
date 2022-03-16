@@ -15,6 +15,9 @@ abstract class AbstractApiController extends AbstractController
             $bodyContent = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
             throw new BadRequestHttpException('Bad content');
+        }catch(\Exception $e)
+        {
+            throw new \Exception('Something went wrong');
         }
 
         return $bodyContent;

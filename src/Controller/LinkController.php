@@ -8,6 +8,8 @@ use App\Entity\Link;
 use App\Repository\LinkRepositoryInterface;
 use App\Service\LinkProvider;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Util\Json;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,10 +21,16 @@ class LinkController extends AbstractApiController
                          LinkRepositoryInterface $linkRepository): JsonResponse
     {
 
-        $bodyContent = $this->getBodyContent($request);
+        try{
+            $bodyContent = $this->getBodyContent($request);
+        }catch (\Exception $e)
+        {
+            return new JsonResponse(null,Response::HTTP_BAD_REQUEST);
+        }
+
 
         if (!isset($bodyContent['url'])) {
-            throw new BadRequestHttpException('Bad request');
+            return new JsonResponse(null,Response::HTTP_BAD_REQUEST);
         }
 
         /** @var Link $link */
@@ -39,11 +47,19 @@ class LinkController extends AbstractApiController
     ): JsonResponse
     {
 
-        $bodyContent = $this->getBodyContent($request);
+        try{
+            $bodyContent = $this->getBodyContent($request);
+        }catch (\Exception $e)
+        {
+            return new JsonResponse(null,Response::HTTP_BAD_REQUEST);
+        }
+
         $link = $linkRepository->findOneById($bodyContent['id']);
         if ($link) {
             $em->remove($link);
             $em->flush();
+        }else{
+            return new JsonResponse(null,Response::HTTP_NO_CONTENT);
         }
 
         return new JsonResponse(json_encode([]), Response::HTTP_OK, [], true);
