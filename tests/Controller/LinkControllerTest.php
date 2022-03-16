@@ -70,7 +70,7 @@ final class LinkControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
     }
 
-    public function testListSuccessful()
+    public function testListSuccessful():void
     {
         $this->client->request('GET', self::API_GET);
         $this->assertResponseIsSuccessful();
