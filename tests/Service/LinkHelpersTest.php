@@ -34,8 +34,9 @@ final class LinkHelpersTest extends TestCase
      * @return void
      * @depends testOEmbed
      */
-    public function test($info): void
+    public function testHelpers($info): void
     {
+        // arrange
         $link = $this->createMock(Link::class);
         $link->method('getType')
             ->will($this->onConsecutiveCalls(LinkTypeEnum::TYPE_VIDEO,
@@ -47,22 +48,18 @@ final class LinkHelpersTest extends TestCase
         $expectedLinkProperties[LinkTypeEnum::TYPE_IMAGE] = $defaultProperties;
         $expectedLinkProperties[LinkTypeEnum::TYPE_VIDEO] = [...$defaultProperties, LinkPropertyEnum::PROPERTY_DURATION];
 
-        $this->assertEquals($expectedLinkProperties[LinkTypeEnum::TYPE_VIDEO], LinkHelpers::getPropertiesList($link));
-        $this->assertEquals($expectedLinkProperties[LinkTypeEnum::TYPE_IMAGE],LinkHelpers::getPropertiesList($link));
-
         $url['video'] = self::VIMEO_URL;
         $url['image'] = self::FLICK_URL;
-
-        $this->assertTrue(LinkHelpers::isValid($url['image']),'LinkHelpers::isValid function is broken');
-
         $existingProvider = ProviderEnum::PROVIDER_FLICKR;
         $unknownProvider = 'foo.bar';
 
+        // assert
+        $this->assertEquals($expectedLinkProperties[LinkTypeEnum::TYPE_VIDEO], LinkHelpers::getPropertiesList($link));
+        $this->assertEquals($expectedLinkProperties[LinkTypeEnum::TYPE_IMAGE],LinkHelpers::getPropertiesList($link));
+        $this->assertTrue(LinkHelpers::isValid($url['image']),'LinkHelpers::isValid function is broken');
         $this->assertSame($existingProvider,LinkHelpers::extractProvider($existingProvider));
         $this->assertNull(LinkHelpers::extractProvider($unknownProvider));
-
-        $link = LinkHelpers::extractLinkEntity($info);
-        $this->assertInstanceOf(Link::class,$link);
+        $this->assertInstanceOf(Link::class, LinkHelpers::extractLinkEntity($info));
     }
 
     public function testOEmbed()
