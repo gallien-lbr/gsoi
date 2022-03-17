@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Entity\Link;
@@ -41,38 +42,54 @@ final class LinkControllerTest extends WebTestCase
 
     public function testSaveSuccessful(): void
     {
+        // act
         $crawler = $this->client->request('POST', self::API_SAVE, [], [], [], \json_encode(['url' => self::URL]));
+
+        // assert
         $this->assertResponseIsSuccessful(\sprintf('%s test', self::API_SAVE));
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
     }
 
     public function testSaveFail(): void
     {
+        // act
         $crawler = $this->client->request('POST', self::API_SAVE, [], [], [], \json_encode(['url' => null]));
+
+        // assert
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST, sprintf('%s test', self::API_SAVE));
     }
 
     public function testDeleteSuccessful(): void
     {
+        // arrange
         $link = $this->entityManager
             ->getRepository(Link::class)
             ->findOneBy([], ['id' => 'desc']);
 
+        // act
         $crawler = $this->client->request('DELETE', self::API_DELETE, [], [], [], \json_encode(['id' => $link->getId()]));
+
+        // assert
         $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
     public function testDeleteFail(): void
     {
+        // act
         $crawler = $this->client->request('DELETE', self::API_DELETE, [], [], [], \json_encode(['id' => null]));
+
+        // assert
         $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
     }
 
     public function testListSuccessful():void
     {
+        // act
         $this->client->request('GET', self::API_GET);
+
+        // assert
         $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
