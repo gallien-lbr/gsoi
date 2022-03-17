@@ -67,13 +67,15 @@ final class LinkHelpersTest extends TestCase
 
     public function testOEmbed()
     {
+        // arrange
         $embed = new Embed();
         $cache = new FilesystemAdapter();
         $container = $this->createMock(Container::class);
         $container->method('getParameter')->with('cache_ttl')->willReturn(3600);
-
         $oEmbed = new OEmbed($embed,$cache,$container);
+        // act
         $info = $oEmbed->get(self::VIMEO_URL);
+        // assert
         $this->assertNotNull($info);
         return $info;
     }
